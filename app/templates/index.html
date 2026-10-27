@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>todoo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>todoo</h1>
+    </header>
+
+    <main>
+        <aside>
+            <h2>My Lists</h2>
+            <ul>
+                <li>Groceries</li>
+                <li>Personal</li>
+                <li>Work</li>
+            </ul>
+        </aside>
+
+        <section>
+            <h2>Groceries</h2>
+            <ul>
+                <li>☐ Buy milk</li>
+                <li>☑ Buy apples</li>
+            </ul>
+            <p>Add a task...</p>
+        </section>
+    </main>
+</body>
+</html>
