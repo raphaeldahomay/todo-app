@@ -12,13 +12,13 @@ create table users (
     , last_name varchar(255) not null
     , username varchar(255) unique not null
     , pwd_hash text not null 
-    , created_at timestampz not null default current_timestamp
+    , created_at timestamptz not null default current_timestamp
     , is_active boolean not null default true
 );
 
 create table folders (
     folder_id uuid primary key not null default gen_random_uuid()
-    , user_id uuid foreign key not null references users(user_id)
+    , user_id uuid not null references users(user_id)
     , folder_name varchar(255) not null
     , created_at timestamptz not null default current_timestamp
     , updated_at timestamptz

@@ -1,14 +1,12 @@
 import os
-from flask import Flask, render_template
+from flask import Flask
 
 
 def create_app():
     # create the app
     app = Flask(__name__)
     
-    # the main page
-    @app.route('/')
-    def main_page():
-        return render_template('index.html')
+    from app.routes import main
+    app.register_blueprint(main)
 
     return app
