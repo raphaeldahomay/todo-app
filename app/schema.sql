@@ -10,6 +10,7 @@ create table users (
     user_id uuid primary key not null default gen_random_uuid()
     , first_name varchar(255) not null
     , last_name varchar(255) not null
+    , email varchar(255) unique not null
     , username varchar(255) unique not null
     , pwd_hash text not null 
     , created_at timestamptz not null default current_timestamp
