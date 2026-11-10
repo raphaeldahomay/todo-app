@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,28 +8,64 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <header>
-        <h1>todoo</h1>
-    </header>
 
-    <main>
-        <aside>
-            <h2>My Lists</h2>
-            <ul>
-                <li>Groceries</li>
-                <li>Personal</li>
-                <li>Work</li>
-            </ul>
-        </aside>
+    <div class="app-container">
 
-        <section>
-            <h2>Groceries</h2>
-            <ul>
-                <li>☐ Buy milk</li>
-                <li>☑ Buy apples</li>
-            </ul>
-            <p>Add a task...</p>
-        </section>
-    </main>
+        <header>
+            <h1>todoo<span class="accent">.</span></h1>
+
+            <nav class="header-actions">
+                <a href="{{ url_for('main.login') }}" class="btn btn-outline">Log in</a>
+                <a href="{{ url_for('main.signup') }}" class="btn btn-primary">Sign up</a>
+            </nav>
+        </header>
+
+        <main class="workspace">
+
+            <aside class="sidebar">
+                <div class="sidebar-heading">
+                    <h2>My Lists</h2>
+                    <button id="create-folder-btn" class="icon-btn" type="button" title="Create folder">+</button>
+                </div>
+
+                <ul id="folder-list" class="folder-list">
+                    <li class="active">Groceries</li>
+                    <li>Personal</li>
+                    <li>Work</li>
+                </ul>
+            </aside>
+
+            <section class="content">
+                <div class="content-heading">
+                    <h2 id="current-folder-title">Groceries</h2>
+                    <p>Keep track of what matters.</p>
+                </div>
+
+                <ul id="task-list" class="task-list">
+                    <li>
+                        <input type="checkbox" id="task-1">
+                        <label for="task-1">Buy milk</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="task-2" checked>
+                        <label for="task-2">Buy apples</label>
+                    </li>
+                </ul>
+
+                <div class="add-task">
+                    <input
+                        type="text"
+                        id="task-input"
+                        placeholder="Write a task..."
+                        autocomplete="off"
+                    >
+                    <button id="add-task-btn" class="btn btn-primary" type="button">Add</button>
+                </div>
+            </section>
+
+        </main>
+
+    </div>
+
 </body>
 </html>

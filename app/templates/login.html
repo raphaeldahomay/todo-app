@@ -1,0 +1,69 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log in | todoo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="auth-page">
+
+    <div class="auth-container">
+
+        <a href="{{ url_for('main.main_page') }}" class="auth-logo">
+            todoo<span class="accent">.</span>
+        </a>
+
+        <div class="auth-card">
+            <h2>Welcome back</h2>
+            <p class="auth-subtitle">Log in to manage your tasks.</p>
+
+            {% if error %}
+                <div class="error-message" role="alert">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('main.login') }}">
+
+                <div class="form-group">
+                    <label for="email_username">Email or Username</label>
+                    <input
+                        type="text"
+                        id="email_username"
+                        name="email_username"
+                        placeholder="Enter your email/username"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full">
+                    Log in
+                </button>
+
+            </form>
+        </div>
+
+        <p class="auth-footer">
+            Don't have an account?
+            <a href="{{ url_for('main.signup') }}">Sign up</a>
+        </p>
+
+    </div>
+
+</body>
+</html>

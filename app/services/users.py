@@ -31,3 +31,20 @@ def username_exists(username):
             exists = cur.fetchone() is not None
 
     return exists
+
+
+def email_exists(email):
+    with get_db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                select 1
+                from users
+                where email = %s
+                """
+                , (email,)
+            )
+
+            exists = cur.fetchone() is not None
+
+    return exists
