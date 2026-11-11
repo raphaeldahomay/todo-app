@@ -7,7 +7,8 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
     
-    from app.routes import main
+    from app.auth_routes import main
+    from app import action_routes
     app.register_blueprint(main)
 
     return app

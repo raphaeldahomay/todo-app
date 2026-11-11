@@ -15,24 +15,89 @@
             <h1>todoo<span class="accent">.</span></h1>
 
             <nav class="header-actions">
-                <a href="{{ url_for('main.login') }}" class="btn btn-outline">Log in</a>
-                <a href="{{ url_for('main.signup') }}" class="btn btn-primary">Sign up</a>
+                {% if session.get('user_id') %}
+                    <a href="{{ url_for('main.logout') }}" class="btn btn-outline">Sign out</a>
+                {% else %}
+                    <a href="{{ url_for('main.login') }}" class="btn btn-outline">Log in</a>
+                    <a href="{{ url_for('main.signup') }}" class="btn btn-primary">Sign up</a>
+                {% endif %}
             </nav>
         </header>
 
         <main class="workspace">
 
             <aside class="sidebar">
+
                 <div class="sidebar-heading">
                     <h2>My Lists</h2>
-                    <button id="create-folder-btn" class="icon-btn" type="button" title="Create folder">+</button>
+                    <button type="button" class="icon-btn" onclick="showFolderForm()">+</button>
                 </div>
 
+                <form id="folder-form"
+                    action="{{ url_for('main.create_folder') }}"
+                    method="POST"
+                    style="display: none;">
+
+                    <input
+                        type="text"
+                        name="folder_name"
+                        class="folder-input"
+                        placeholder="Folder name"
+                        required
+                    >
+
+                    <button type="submit" class="folder-submit">Create</button>
+                </form>
+
                 <ul id="folder-list" class="folder-list">
-                    <li class="active">Groceries</li>
-                    <li>Personal</li>
-                    <li>Work</li>
+                    {% if folders %}
+                        {% for folder in folders %}
+                            <li data-folder-id="{{ folder[0] }}">
+
+                                <div class="folder-row">
+                                    <span class="folder-name">{{ folder[1] }}</span>
+
+                                    <button
+                                        type="button"
+                                        class="folder-delete-icon"
+                                        onclick="showDeleteButton(this)"
+                                        title="Delete folder"
+                                        aria-label="Delete folder"
+                                    >
+                                        &#128465;
+                                    </button>
+                                </div>
+
+                                <!-- Hidden confirmation box -->
+                                <div class="folder-delete-confirm" style="display: none;">
+                                    <span>Delete this folder?</span>
+
+                                    <div class="folder-delete-actions">
+                                        <button
+                                            type="button"
+                                            class="folder-cancel-btn"
+                                            onclick="cancelDelete(this)"
+                                        >
+                                            Cancel
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            class="folder-confirm-btn"
+                                            onclick="deleteFolder(this)"
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li>No folders yet</li>
+                    {% endif %}
                 </ul>
+
             </aside>
 
             <section class="content">
@@ -67,5 +132,6 @@
 
     </div>
 
+    <script src="{{ url_for('static', filename='js/folders.js') }}" defer></script>
 </body>
 </html>

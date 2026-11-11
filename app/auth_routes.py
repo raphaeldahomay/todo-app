@@ -1,11 +1,10 @@
-from flask import Blueprint, render_template, session, url_for, request, redirect, current_app
+from flask import Blueprint, render_template, session, url_for, request, redirect
 from werkzeug.security import check_password_hash, generate_password_hash
 from app.db import get_db_connection
 from app.utils.validators import is_valid_password
 from app.services.users import generate_username, email_exists
 from psycopg.errors import UniqueViolation, UndefinedTable
 from psycopg import OperationalError
-import traceback
 
 
 
@@ -15,7 +14,25 @@ main = Blueprint("main", __name__)
 
 @main.route('/')
 def main_page():
-    return render_template('index.html')
+    user_id = session.get('user_id')
+    folders = []
+
+    if user_id:
+        with get_db_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    select folder_id, folder_name
+                    from folders
+                    where user_id = %s
+                        and is_deleted = FALSE
+                    order by created_at desc
+                    """,
+                    (user_id,)
+                )
+                folders = cur.fetchall()
+
+    return render_template('index.html', folders=folders)
 
 
 
@@ -142,11 +159,11 @@ def signup():
 
 
 
-@main.route('/create_folder')
-def create_folder():
-    is_authenticated = bool(session.get("user_id"))
+@main.route('/logout', methods=['GET', 'POST'])
+def logout():
+    if not session.get('user_id'):
+        return render_template('index.html', error='You are already logged out.'), 400
 
-    if is_authenticated:
-        return 
-    
-    return redirect(url_for('main.login'))
+    session.clear()
+
+    return redirect(url_for('main.main_page'))
