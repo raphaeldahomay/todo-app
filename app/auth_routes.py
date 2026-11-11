@@ -15,14 +15,23 @@ main = Blueprint("main", __name__)
 @main.route('/')
 def main_page():
     user_id = session.get('user_id')
+    folder_id = request.args.get('folder_id')
+
     folders = []
+    selected_folder = None
+    tasks = []
 
     if user_id:
         with get_db_connection() as conn:
             with conn.cursor() as cur:
+
+                # Retrieve all user folders
                 cur.execute(
                     """
-                    select folder_id, folder_name
+                    select
+                        folder_id
+                        , folder_name
+                        , created_at
                     from folders
                     where user_id = %s
                         and is_deleted = FALSE
@@ -30,10 +39,50 @@ def main_page():
                     """,
                     (user_id,)
                 )
+
                 folders = cur.fetchall()
 
-    return render_template('index.html', folders=folders)
+                # Retrieve selected folder and its tasks
+                if folder_id:
+                    cur.execute(
+                        """
+                        select
+                            folder_id
+                            , folder_name
+                            , created_at
+                        from folders
+                        where folder_id = %s
+                            and user_id = %s
+                            and is_deleted = FALSE
+                        """,
+                        (folder_id, user_id)
+                    )
 
+                    selected_folder = cur.fetchone()
+
+                    if selected_folder:
+                        cur.execute(
+                            """
+                            select
+                                task_id
+                                , task_desc
+                                , is_done
+                            from tasks
+                            where folder_id = %s
+                                and is_deleted = FALSE
+                            order by created_at desc
+                            """,
+                            (folder_id,)
+                        )
+
+                        tasks = cur.fetchall()
+
+    return render_template(
+        'index.html',
+        folders=folders,
+        selected_folder=selected_folder,
+        tasks=tasks
+    )
 
 
 @main.route('/login', methods=['GET', 'POST'])

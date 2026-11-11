@@ -17,7 +17,8 @@ a {
     color: inherit;
 }
 
-button, input {
+button,
+input {
     font: inherit;
 }
 
@@ -33,12 +34,15 @@ button {
 
 .app-container {
     max-width: 1100px;
-    min-height: 85vh;
+    height: 85vh;
+    min-height: 500px;
     margin: 40px auto;
     background: white;
     border: 1px solid #e5e7eb;
     border-radius: 14px;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
 }
 
@@ -50,6 +54,7 @@ header {
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid #e5e7eb;
+    flex-shrink: 0;
 }
 
 h1 {
@@ -113,8 +118,12 @@ h1 {
 
 .workspace {
     display: flex;
-    min-height: 70vh;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
 }
+
+/* SIDEBAR */
 
 .sidebar {
     width: 240px;
@@ -122,6 +131,7 @@ h1 {
     padding: 28px 20px;
     background: #f9fafb;
     border-right: 1px solid #e5e7eb;
+    overflow-y: auto;
 }
 
 .sidebar-heading {
@@ -139,6 +149,8 @@ h1 {
     letter-spacing: 0.5px;
 }
 
+/* FOLDERS */
+
 .folder-list,
 .task-list {
     list-style: none;
@@ -147,11 +159,10 @@ h1 {
 }
 
 .folder-list li {
-    padding: 12px 14px;
+    padding: 6px 8px;
     margin-bottom: 5px;
     border-radius: 8px;
     font-size: 14px;
-    cursor: pointer;
 }
 
 .folder-list li:hover {
@@ -181,7 +192,6 @@ h1 {
 
 .folder-input {
     width: 100%;
-    box-sizing: border-box;
     padding: 8px 10px;
     border: 1px solid #ddd;
     border-radius: 6px;
@@ -198,22 +208,62 @@ h1 {
     cursor: pointer;
 }
 
+.folder-submit:hover {
+    background: #4f46e5;
+}
+
 /* FOLDER ROW */
 
 .folder-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
+    gap: 6px;
 }
 
 .folder-name {
     flex: 1;
+    min-width: 0;
+    padding: 8px 6px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    text-align: left;
+    color: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    overflow-wrap: anywhere;
+}
+
+.folder-name:hover {
+    color: #6366f1;
+}
+
+.folder-name:focus-visible {
+    outline: 2px solid #6366f1;
+    outline-offset: 2px;
+}
+
+.folder-list li.active .folder-name {
+    color: #4f46e5;
+    font-weight: 600;
 }
 
 /* DELETE ICON */
 
 .folder-delete-icon {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: #ef4444;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 2px 5px;
+    opacity: 0.7;
+}
+
+.task-delete-icon {
+    flex-shrink: 0;
     background: none;
     border: none;
     color: #ef4444;
@@ -227,18 +277,26 @@ h1 {
     opacity: 1;
 }
 
+.task-delete-icon:hover {
+    opacity: 1;
+}
+
 /* DELETE CONFIRMATION */
 
-.folder-delete-confirm {
+.folder-delete-confirm
+, .task-delete-confirm {
     margin-top: 10px;
     padding: 10px;
     background: #fef2f2;
     border: 1px solid #fecaca;
     border-radius: 6px;
     font-size: 13px;
+    color: #374151;
+    font-weight: 400;
 }
 
-.folder-delete-actions {
+.folder-delete-actions
+, .task-delete-actions {
     display: flex;
     gap: 8px;
     margin-top: 10px;
@@ -252,19 +310,22 @@ h1 {
     font-size: 12px;
 }
 
-.folder-cancel-btn {
+.folder-cancel-btn
+, .task-cancel-btn {
     background: white;
     color: #374151;
     border: 1px solid #d1d5db;
 }
 
-.folder-confirm-btn {
+.folder-confirm-btn
+, .task-confirm-btn {
     background: #ef4444;
     color: white;
     border: none;
 }
 
-.folder-confirm-btn:hover {
+.folder-confirm-btn:hover
+, .task-confirm-btn:hover {
     background: #dc2626;
 }
 
@@ -273,22 +334,82 @@ h1 {
 .content {
     flex: 1;
     min-width: 0;
+    min-height: 0;
     padding: 40px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
+/* CONTENT HEADING */
+
 .content-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
     margin-bottom: 30px;
+    flex-shrink: 0;
+}
+
+.content-heading-info {
+    min-width: 0;
 }
 
 .content-heading h2 {
     margin: 0 0 8px;
     font-size: 26px;
+    overflow-wrap: anywhere;
 }
 
 .content-heading p {
     margin: 0;
     font-size: 14px;
     color: #9ca3af;
+}
+
+.folder-created-at {
+    font-size: 12px;
+    color: #9ca3af;
+    white-space: nowrap;
+    padding-top: 6px;
+    flex-shrink: 0;
+}
+
+/* ADD TASK */
+
+.add-task {
+    display: flex;
+    gap: 10px;
+    margin: 0 0 25px;
+    flex-shrink: 0;
+}
+
+.add-task input[type="text"] {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+}
+
+.add-task input[type="text"]:focus {
+    border-color: #6366f1;
+}
+
+.add-task button {
+    flex-shrink: 0;
+}
+
+/* TASK LIST */
+
+.task-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 5px;
 }
 
 .task-list li {
@@ -299,43 +420,54 @@ h1 {
     border-bottom: 1px solid #f3f4f6;
 }
 
+.task-list li:hover {
+    background: #f9fafb;
+}
+
 .task-list input[type="checkbox"] {
     width: 17px;
     height: 17px;
+    flex-shrink: 0;
     accent-color: #6366f1;
     cursor: pointer;
 }
 
 .task-list label {
+    flex: 1;
     cursor: pointer;
     font-size: 14px;
+    overflow-wrap: anywhere;
 }
 
-.task-list input:checked + label {
+.task-list input[type="checkbox"]:checked + label {
     text-decoration: line-through;
     color: #9ca3af;
 }
 
-/* ADD TASK */
+/* EMPTY STATES */
 
-.add-task {
-    display: flex;
-    gap: 10px;
-    margin-top: 25px;
-}
-
-.add-task input {
+.content-empty-state,
+.tasks-empty-state {
     flex: 1;
-    min-width: 0;
-    padding: 12px 14px;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    outline: none;
-    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #9ca3af;
 }
 
-.add-task input:focus {
-    border-color: #6366f1;
+.content-empty-state h2 {
+    margin: 0 0 10px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.content-empty-state p,
+.tasks-empty-state p {
+    margin: 0;
+    font-size: 14px;
 }
 
 /* AUTHENTICATION */
@@ -445,8 +577,10 @@ h1 {
 @media (max-width: 700px) {
     .app-container {
         margin: 0;
-        min-height: 100vh;
+        height: 100dvh;
+        min-height: 0;
         border-radius: 0;
+        border: none;
     }
 
     header {
@@ -459,12 +593,28 @@ h1 {
 
     .sidebar {
         width: 100%;
+        max-height: 35%;
+        flex-shrink: 0;
+        padding: 20px;
         border-right: none;
         border-bottom: 1px solid #e5e7eb;
     }
 
     .content {
         padding: 25px 20px;
+    }
+
+    .content-heading {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .content-heading h2 {
+        font-size: 22px;
+    }
+
+    .folder-created-at {
+        white-space: normal;
     }
 
     .form-row {

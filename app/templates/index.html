@@ -52,10 +52,20 @@
                 <ul id="folder-list" class="folder-list">
                     {% if folders %}
                         {% for folder in folders %}
-                            <li data-folder-id="{{ folder[0] }}">
+                            <li
+                                data-folder-id="{{ folder[0] }}"
+                                class="{% if selected_folder and selected_folder[0] == folder[0] %}active{% endif %}"
+                            >
 
                                 <div class="folder-row">
-                                    <span class="folder-name">{{ folder[1] }}</span>
+
+                                    <button
+                                        type="button"
+                                        class="folder-name"
+                                        onclick="selectFolder(this)"
+                                    >
+                                        {{ folder[1] }}
+                                    </button>
 
                                     <button
                                         type="button"
@@ -66,6 +76,7 @@
                                     >
                                         &#128465;
                                     </button>
+
                                 </div>
 
                                 <!-- Hidden confirmation box -->
@@ -94,39 +105,144 @@
                             </li>
                         {% endfor %}
                     {% else %}
-                        <li>No folders yet</li>
+                        <li>
+                            <div class="content-empty-state">
+                                <p>No folders yet.</p>
+                            </div>
+                        </li>
                     {% endif %}
                 </ul>
 
             </aside>
 
-            <section class="content">
+        <section class="content">
+
+            {% if selected_folder %}
+
+                <!-- SELECTED FOLDER HEADER -->
                 <div class="content-heading">
-                    <h2 id="current-folder-title">Groceries</h2>
-                    <p>Keep track of what matters.</p>
+
+                    <div class="content-heading-info">
+                        <h2 id="current-folder-title">
+                            {{ selected_folder[1] }}
+                        </h2>
+                        <p>Keep track of what matters.</p>
+                    </div>
+
+                    <span class="folder-created-at">
+                        Created on:
+                        {{ selected_folder[2].strftime('%d/%m/%Y') }}
+                    </span>
+
                 </div>
 
-                <ul id="task-list" class="task-list">
-                    <li>
-                        <input type="checkbox" id="task-1">
-                        <label for="task-1">Buy milk</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="task-2" checked>
-                        <label for="task-2">Buy apples</label>
-                    </li>
-                </ul>
+                <!-- ADD TASK FORM -->
+                <form
+                    id="add-task-form"
+                    class="add-task"
+                    method="POST"
+                    action="{{ url_for('main.create_task') }}"
+                >
+                    <input
+                        type="hidden"
+                        name="folder_id"
+                        value="{{ selected_folder[0] }}"
+                    >
 
-                <div class="add-task">
                     <input
                         type="text"
                         id="task-input"
+                        name="task_desc"
                         placeholder="Write a task..."
                         autocomplete="off"
+                        required
                     >
-                    <button id="add-task-btn" class="btn btn-primary" type="button">Add</button>
+
+                    <button
+                        id="add-task-btn"
+                        class="btn btn-primary"
+                        type="submit"
+                    >
+                        Add
+                    </button>
+                </form>
+
+                <!-- TASK LIST -->
+                {% if tasks %}
+
+                    <ul id="task-list" class="task-list">
+                        {% for task in tasks %}
+
+                            <li data-task-id="{{ task[0] }}">
+
+                                <input
+                                    type="checkbox"
+                                    id="task-{{ task[0] }}"
+                                    onchange="toggleTask(this)"
+                                    {% if task[2] %}checked{% endif %}
+                                >
+
+                                <label for="task-{{ task[0] }}">
+                                    {{ task[1] }}
+                                </label>
+
+                                <button
+                                    type="button"
+                                    class="task-delete-icon"
+                                    onclick="showDeleteTaskButton(this)"
+                                    title="Delete task"
+                                    aria-label="Delete task"
+                                >
+                                    &minus;
+                                </button>
+
+                                <!-- Hidden confirmation box -->
+                                <div class="task-delete-confirm" style="display: none;">
+                                    <span>Delete this task?</span>
+
+                                    <div class="task-delete-actions">
+                                        <button
+                                            type="button"
+                                            class="task-cancel-btn"
+                                            onclick="cancelDeleteTask(this)"
+                                        >
+                                            Cancel
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            class="task-confirm-btn"
+                                            onclick="deleteTask(this)"
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </li>
+
+                        {% endfor %}
+                    </ul>
+
+                {% else %}
+
+                    <div class="tasks-empty-state">
+                        <p>List empty</p>
+                    </div>
+
+                {% endif %}
+
+            {% else %}
+
+                <!-- NO FOLDER SELECTED -->
+                <div class="content-empty-state">
+                    <h2>No list selected</h2>
+                    <p>Select a list from the sidebar to view its tasks.</p>
                 </div>
-            </section>
+
+            {% endif %}
+
+        </section>
 
         </main>
 

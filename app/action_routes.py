@@ -1,11 +1,6 @@
-from flask import Blueprint, render_template, session, url_for, request, redirect, current_app
-from werkzeug.security import check_password_hash, generate_password_hash
+from flask import render_template, session, url_for, request, redirect
 from app.db import get_db_connection
-from app.utils.validators import is_valid_password
-from app.services.users import generate_username, email_exists
-from psycopg.errors import UniqueViolation, UndefinedTable
 from psycopg import OperationalError
-import traceback
 from app.auth_routes import main
 
 
@@ -80,4 +75,92 @@ def delete_folder():
 
     return {'success': True}, 200 
 
+
+
+@main.route('/create_task', methods=['GET', 'POST'])
+def create_task():
+    user_id = session.get('user_id')
+
+    folder_id = request.form.get('folder_id')
+    task_desc = request.form.get('task_desc')
+
+    if user_id is None:
+        return redirect(url_for('login'))
+
+    try:
+        with get_db_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    insert into tasks(
+                        folder_id
+                        , task_desc  
+                    )
+                    values(%s, %s)
+                    """,
+                    (folder_id, task_desc)
+                )
+
+    except OperationalError:
+        return render_template('index.html', error='Sorry an error occurred. Try again later'), 400
     
+    return redirect(url_for('main.main_page', folder_id=folder_id))
+
+
+
+@main.route('/toggle-task', methods=['POST'])
+def toggle_task():
+    data = request.get_json()
+
+    task_id = data.get('task_id')
+    is_done = data.get('is_done')
+
+    try:
+        with get_db_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    update tasks
+                    set
+                        is_done = %s
+                        , updated_at = current_timestamp
+                    where task_id = %s
+                    """,
+                    (is_done, task_id)
+                )
+
+    except OperationalError:
+        return render_template('index.html', error='Sorry an error occurred. Try again later'), 400
+
+    return {'success': True}, 200
+
+
+
+@main.route('/delete-task', methods=['GET', 'POST'])
+def delete_task():
+    user_id = session.get("user_id")
+    is_authenticated = bool(user_id)
+
+    if not is_authenticated:
+        return render_template('login.html', error='Please logged-in first.')
+
+    task_id = request.get_json()['task_id']
+
+    try:
+        with get_db_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    update tasks
+                    set
+                        is_deleted = true
+                        , updated_at = current_timestamp
+                    where task_id = %s
+                    """
+                    , (task_id,)
+                )
+
+    except OperationalError:
+        return render_template('index.html', error='Sorry an error occurred. Try again later'), 400
+
+    return {'success': True}, 200 
