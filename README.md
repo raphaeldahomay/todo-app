@@ -183,6 +183,11 @@ todoo was developed as a hands-on learning project, with an emphasis on understa
 
 The application is intended for local development and educational use.
 
+## License
+
+This project is licensed under the MIT License.
+See the [LICENSE](LICENSE) file for details.
+
 ## Author
 
 Raphaël Dahomay
