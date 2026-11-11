@@ -37,7 +37,7 @@ Follow these instructions to set up and run todoo on your local machine.
 
 ```bash
 git clone <repository-url>
-cd todoo
+cd todo-app
 ```
 
 ### 2. Create a Python Virtual Environment
