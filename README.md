@@ -4,6 +4,8 @@
 
 todoo is a personal full-stack development project designed to help users organize their daily activities through a simple and intuitive interface. Users can create an account, manage folders, add tasks, track their completion, and delete items they no longer need.
 
+It was built in 16 days.
+
 ## About the Project
 
 Beyond building a functional task manager, the primary goal of todoo was to strengthen my understanding of how a web application works from end to end.
